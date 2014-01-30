@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+import sys
+import rospy
+from downward_msgs.srv import *
+
+def search_client(x):
+	rospy.wait_for_service('search')
+	search_cl = rospy.ServiceProxy('search', search)
+	resp1 = search_cl(str(x))
+	return resp1.search
+
+
+def usage():
+    return "%s [output]"%sys.argv[0]
+
+if __name__ == "__main__":
+    rospy.init_node('test_client')
+    if len(sys.argv) == 2:
+        x = sys.argv[1]
+    else:
+        print usage()
+        sys.exit(1)
+
+    with open (x, "r") as myfile:
+	data=myfile.read()
+    print "Requesting %s search to output"%(x)
+    print "%s -> %s"%(x, search_client(data))

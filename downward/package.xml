@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>downward</name>
+  <version>0.9.0</version>
+  <description>
+	The downward package, provides an action server that solves PDDL files. Services of translation to SAS, preprocessing, and finally the search are all implemented. Multiple heuristics and search algorithms are implemented and accessible at run-time via ros parameters.
+  </description>
+
+  <maintainer email="phuicy@todo.todo">phuicy</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+
+    <metapackage/>
+
+  </export>
+</package>

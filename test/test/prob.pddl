@@ -1,0 +1,6 @@
+(define (problem test-problem ) 
+	(:domain test ) 
+	(:init ( = (total-cost) 0  ) )
+	(:goal ( and (pubToTopic record-effState record) (topicToPub record record-effState) (topicIsPublishing record ) (pubType record-effState EMs_visual ) (topicType record EMs_visual ) (isPublishing record-effState) ( pubHasAttrib record-effState fourEighty_EA_map_imageHeight ) ( pubHasAttrib record-effState sixForty_EA_map_imageWidth ) ( pubHasAttrib record-effState three_EA_map_frameRate )  ) )
+	(:metric minimize (total-cost)) 
+)

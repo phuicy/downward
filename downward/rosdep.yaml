@@ -1,0 +1,14 @@
+mercurial:
+   ubuntu: mercurial
+g++:
+   ubuntu: g++
+make: 
+   ubuntu: make
+python:
+   ubuntu: python
+flex: 
+   ubuntu: flex
+bison: 
+   ubuntu: bison
+gawk: 
+   ubuntu: gawk

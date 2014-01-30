@@ -1,0 +1,10 @@
+<launch>
+  <node name="translator" pkg="translate" type="translate.py" output="screen"/>
+
+  <node name="preprocessor" pkg="preprocess" type="preprocess_server" output="screen"/>
+
+  <node name="searcher" pkg="search" type="search_server" output="screen"/>
+
+  <node name="planner_server" pkg="planner" type="planner_server" output="screen"/>
+
+</launch>

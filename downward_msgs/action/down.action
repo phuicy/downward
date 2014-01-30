@@ -1,0 +1,9 @@
+#goal definition
+string problem
+string domain
+---
+#result definition
+string result
+---
+#feedback
+string feedback

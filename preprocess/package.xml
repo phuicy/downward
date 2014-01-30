@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>preprocess</name>
+  <version>0.9.0</version>
+  <description>The preprocess package. Preproccesses SAS code</description>
+
+  <maintainer email="phuicy@todo.todo">phuicy</maintainer>
+
+
+  <license>BSD</license>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>downward_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <run_depend>downward_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- You can specify that this package is a metapackage here: -->
+    <!-- <metapackage/> -->
+
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

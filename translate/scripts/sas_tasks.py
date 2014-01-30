@@ -1,0 +1,194 @@
+from __future__ import print_function
+
+SAS_FILE_VERSION = 3
+
+
+class SASTask:
+    def __init__(self, variables, mutexes, init, goal,
+                 operators, axioms, metric):
+        self.variables = variables
+        self.mutexes = mutexes
+        self.init = init
+        self.goal = goal
+        self.operators = sorted(operators, key=lambda op: (op.name, op.prevail, op.pre_post))
+        self.axioms = sorted(axioms, key=lambda axiom: (axiom.condition, axiom.effect))
+        self.metric = metric
+    def output(self):
+        stream="begin_version\n"
+        stream+=str(SAS_FILE_VERSION)+"\n"
+        stream+="end_version"+"\n"
+        stream+="begin_metric"+"\n"
+        stream+=str(int(self.metric))+"\n"
+        stream+="end_metric"+"\n"
+        stream+=self.variables.output()
+        stream+=str(len(self.mutexes))+"\n"
+        for mutex in self.mutexes:
+            stream+=mutex.output()
+        stream+=self.init.output()
+        stream+=self.goal.output()
+        stream+=str(len(self.operators))+"\n"
+        for op in self.operators:
+            stream+=op.output()
+        stream+=str(len(self.axioms))+"\n"
+        for axiom in self.axioms:
+            stream+=axiom.output()
+	return stream
+    def get_encoding_size(self):
+        task_size = 0
+        task_size += self.variables.get_encoding_size()
+        for mutex in self.mutexes:
+            task_size += mutex.get_encoding_size()
+        task_size += self.goal.get_encoding_size()
+        for op in self.operators:
+            task_size += op.get_encoding_size()
+        for axiom in self.axioms:
+            task_size += axiom.get_encoding_size()
+        return task_size
+
+class SASVariables:
+    def __init__(self, ranges, axiom_layers, value_names):
+        self.ranges = ranges
+        self.axiom_layers = axiom_layers
+        self.value_names = value_names
+    def dump(self):
+        for var, (rang, axiom_layer) in enumerate(zip(self.ranges, self.axiom_layers)):
+            if axiom_layer != -1:
+                axiom_str = " [axiom layer %d]" % axiom_layer
+            else:
+                axiom_str = ""
+            print("v%d in {%s}%s" % (var, list(range(rang)), axiom_str))
+    def output(self):
+        stream=str(len(self.ranges))+"\n"
+        for var, (rang, axiom_layer, values) in enumerate(zip(
+                self.ranges, self.axiom_layers, self.value_names)):
+            stream+="begin_variable\n"
+            stream+="var" + str(var) + "\n"
+            stream+=str(axiom_layer) + "\n"
+            stream+=str(rang) + "\n"
+            assert rang == len(values), (rang, values)
+            for value in values:
+                stream+=str(value)+"\n"
+            stream+="end_variable\n"
+	return stream
+    def get_encoding_size(self):
+        # A variable with range k has encoding size k + 1 to also give the
+        # variable itself some weight.
+        return len(self.ranges) + sum(self.ranges)
+
+class SASMutexGroup:
+    def __init__(self, facts):
+        self.facts = facts
+    def dump(self):
+        for var, val in self.facts:
+            print("v%d: %d" % (var, val))
+    def output(self):
+        stream="begin_mutex_group\n"
+        stream+=str(len(self.facts))+"\n"
+        for var, val in self.facts:
+            stream+=str(var) + " " + str(val) +"\n"
+        stream+="end_mutex_group\n"
+	return stream
+    def get_encoding_size(self):
+        return len(self.facts)
+
+class SASInit:
+    def __init__(self, values):
+        self.values = values
+    def dump(self):
+        for var, val in enumerate(self.values):
+            if val != -1:
+                print("v%d: %d" % (var, val))
+    def output(self):
+        stream="begin_state\n"
+        for val in self.values:
+            stream+=str(val)+ "\n"
+        stream+="end_state\n"
+	return stream
+
+class SASGoal:
+    def __init__(self, pairs):
+        self.pairs = sorted(pairs)
+    def dump(self):
+        for var, val in self.pairs:
+            print("v%d: %d" % (var, val))
+    def output(self):
+        stream="begin_goal\n"
+        stream+=str(len(self.pairs))+"\n"
+        for var, val in self.pairs:
+            stream+=str(var) + " "+ str(val) + "\n"
+        stream+="end_goal\n"
+	return stream
+    def get_encoding_size(self):
+        return len(self.pairs)
+
+class SASOperator:
+    def __init__(self, name, prevail, pre_post, cost):
+        self.name = name
+        self.prevail = sorted(prevail)
+        self.pre_post = sorted(pre_post)
+        self.cost = cost
+    def dump(self):
+        print(self.name)
+        print("Prevail:")
+        for var, val in self.prevail:
+            print("  v%d: %d" % (var, val))
+        print("Pre/Post:")
+        for var, pre, post, cond in self.pre_post:
+            if cond:
+                cond_str = " [%s]" % ", ".join(["%d: %d" % tuple(c) for c in cond])
+            else:
+                cond_str = ""
+            print("  v%d: %d -> %d%s" % (var, pre, post, cond_str))
+    def output(self):
+        stream="begin_operator\n"
+        stream+=str(self.name[1:-1])+"\n"
+        stream+=str(len(self.prevail))+"\n"
+        for var, val in self.prevail:
+            stream+=str(var) + " "+ str(val) +"\n"
+        stream+=str(len(self.pre_post))+"\n"
+        for var, pre, post, cond in self.pre_post:
+            stream+=str(len(cond))+' '
+            for cvar, cval in cond:
+                stream+=str(cvar) +' '+ str(cval) +' '
+            stream+=str(var) +' '+ str(pre) +' '+ str(post) + "\n"
+        stream+=str(self.cost) + "\n"
+        stream+="end_operator" + "\n"
+	return stream
+    def get_encoding_size(self):
+        size = 1 + len(self.prevail)
+        for var, pre, post, cond in self.pre_post:
+            size += 1 + len(cond)
+            if pre != -1:
+                size += 1
+        return size
+
+class SASAxiom:
+    def __init__(self, condition, effect):
+        self.condition = sorted(condition)
+        self.effect = effect
+        assert self.effect[1] in (0, 1)
+
+        for _, val in condition:
+            assert val >= 0, condition
+    def dump(self):
+        print("Condition:")
+        for var, val in self.condition:
+            print("  v%d: %d" % (var, val))
+        print("Effect:")
+        var, val = self.effect
+        print("  v%d: %d" % (var, val))
+    def output(self):
+        stream="begin_rule"+"\n"
+        stream+=str(len(self.condition))+"\n"
+        for var, val in self.condition:
+            stream+=str(var) + str(val) + "\n"
+        var, val = self.effect
+        stream+=str(var) + str(1 - val) + str(val) + "\n"
+        stream+="end_rule"+ "\n"
+	return stream
+    def get_encoding_size(self):
+        return 1 + len(self.condition)
+
+
+
+
