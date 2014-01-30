@@ -64,6 +64,20 @@ Simply run:
 roslaunch planner planner.launch
 ```
 
+
+The .action foramt is:
+```
+#goal definition
+string problem
+string domain
+---
+#result definition
+string result
+---
+#feedback
+string feedback
+```
+
 ##Parmeters
 TBC
 
