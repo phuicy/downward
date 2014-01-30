@@ -13,7 +13,7 @@
 
 ##Description
 
-<img src="https://raw.github.com/phuicy/downward/master/image/downward1.png" alt="Downward action server" align="right" width="300"/>
+<img src="https://raw.github.com/phuicy/downward/master/image/downward1.png" alt="Downward action server" align="right" width="500"/>
 
 
 Downward is composed of 1 meta-package, and 6 packages. The packages are:
