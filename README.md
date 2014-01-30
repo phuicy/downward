@@ -13,7 +13,7 @@
 
 ##Description
 
-<img src="https://raw.github.com/libcpu/libcpu/master/images/libcpu.png" alt="Downward action server" align="right" />
+<img src="https://raw.github.com/phuicy/downward/master/image/downward1.png" alt="Downward action server" align="right" />
 
 
 Downward is composed of 1 meta-package, and 6 packages. The packages are:
