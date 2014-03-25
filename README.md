@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/libcpu/libcpu.png?branch=master)](http://travis-ci.org/libcpu/libcpu)
 
-"Downward" is a [ROS](http://ros.org/ "Robot Operating System") is a modularised implemenation of the [Fast Downward](http://www.fast-downward.org/ "www.fast-downward.org") PDDL planner. It is implemented as a ROS [action server](http://wiki.ros.org/actionlib "actionlib"), with individual services underneath this server. All the various hueristics and algorithms available to Fast Downward at run-time via the ROS [parameters](http://wiki.ros.org/Parameter%20Server "Parameter Server"). 
+"Downward" is a [ROS](http://ros.org/ "Robot Operating System") modularised implemenation of the [Fast Downward](http://www.fast-downward.org/ "www.fast-downward.org") PDDL planner. It is implemented as a ROS [action server](http://wiki.ros.org/actionlib "actionlib"), with individual services underneath this server. All the various hueristics and algorithms available to Fast Downward at run-time via the ROS [parameters](http://wiki.ros.org/Parameter%20Server "Parameter Server"). 
 
 ## Table of Contents
 
