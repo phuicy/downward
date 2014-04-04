@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Downward by phuicy</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Downward</h1>
+        <p>PDDL planner for ROS</p>
+
+        <p class="view"><a href="https://github.com/phuicy/downward">View the Project on GitHub <small>phuicy/downward</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/phuicy/downward/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/phuicy/downward/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/phuicy/downward">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="downward--a-ros-implemenatation-of-the-fast-downward-planner" class="anchor" href="#downward--a-ros-implemenatation-of-the-fast-downward-planner"><span class="octicon octicon-link"></span></a>Downward : A ROS implemenatation of the Fast Downward Planner</h1>
+
+<p><a href="http://travis-ci.org/libcpu/libcpu"><img src="https://secure.travis-ci.org/libcpu/libcpu.png?branch=master" alt="Build Status"></a></p>
+
+<p>"Downward" is a <a href="http://ros.org/" title="Robot Operating System">ROS</a> modularised implemenation of the <a href="http://www.fast-downward.org/" title="www.fast-downward.org">Fast Downward</a> PDDL planner. It is implemented as a ROS <a href="http://wiki.ros.org/actionlib" title="actionlib">action server</a>, with individual services underneath this server. All the various hueristics and algorithms available to Fast Downward at run-time via the ROS <a href="http://wiki.ros.org/Parameter%20Server" title="Parameter Server">parameters</a>. </p>
+
+<h2>
+<a name="table-of-contents" class="anchor" href="#table-of-contents"><span class="octicon octicon-link"></span></a>Table of Contents</h2>
+
+<ul>
+<li><a href="#description">Description</a></li>
+<li>
+<a href="#installation">Installation</a>
+
+<ul>
+<li><a href="#pre-requirements">Pre-requirements</a></li>
+<li><a href="#installation-steps">Installation Steps</a></li>
+</ul>
+</li>
+<li><a href="#how%20to%20run">How to Run</a></li>
+<li>
+<a href="#parameters">Parameters</a> </li>
+</ul><h2>
+<a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>Description</h2>
+
+<p><img src="https://raw.github.com/phuicy/downward/master/image/downward1.png" alt="Downward action server" align="right" width="650"></p>
+
+<p>Downward is composed of 1 meta-package, and 6 packages. The packages are:</p>
+
+<ul>
+<li>
+<em>downward_msgs</em>: contains and creates all ROS .msgs, .srv and .actions for Downward.</li>
+<li>
+<em>translate</em>: contains a python service node which take PDDL and converts to SAS.</li>
+<li>
+<em>preprocess</em>: contains a c++ service node which takes SAS and returns a preprocessed SAS.</li>
+<li>
+<em>search</em>: contains a C++ service node that takes the preprocessed and finds a solution (or not); which is returned in the normal downward form.</li>
+<li>
+<em>planner</em>: contains the c++ action server that invokes all the aforementioned services, to create a solution from the PDDL, and return it as a result. Feedback from the action server is also avialable, this feedback contains information such as the state of the processing.</li>
+<li>
+<em>test</em>: contains python scripts and test files (e.g. PDDL) for testing the action server.</li>
+</ul><p>The Goal message for the downward action server is A PDDL file. 
+There exists a launch file for all elements in the planner/launch. The parameters are:</p>
+
+<ul>
+<li>heuristic,</li>
+<li>landmarks,</li>
+<li>search.</li>
+</ul><p>For more information see <a href="#parameters">parameters</a>.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Can built on apple and linux. However, easiest build is on ubuntu as rosdep is setup for ubuntu.</p>
+
+<h3>
+<a name="pre-requirement" class="anchor" href="#pre-requirement"><span class="octicon octicon-link"></span></a>Pre-requirement</h3>
+
+<p>To obtain and build the planner, you need a reasonably modern version of the GNU C++ compiler, and the usual build tools such as GNU make. For the validator, VAL, you will need flex and bison. To run the planner, you also need Python 2.7 (The translator will also run under Python 3.x and can be forced to use the slow Python 2.6) as well as gawk. These dependencies are often satisfied by default on development machines. If not,</p>
+
+<pre><code>sudo apt-get install g++ make python flex bison gawk
+</code></pre>
+
+<p>If you are using an x64 system, you will probably also need to run</p>
+
+<pre><code>sudo apt-get install g++-multilib
+</code></pre>
+
+<p>This can also all be achieved by the rosdep.</p>
+
+<h3>
+<a name="installation-steps" class="anchor" href="#installation-steps"><span class="octicon octicon-link"></span></a>Installation Steps</h3>
+
+<p>Simple </p>
+
+<pre><code>catkin_make
+</code></pre>
+
+<h2>
+<a name="how-to-run" class="anchor" href="#how-to-run"><span class="octicon octicon-link"></span></a>How to Run</h2>
+
+<p>Simply run:</p>
+
+<pre><code>roslaunch planner planner.launch
+</code></pre>
+
+<p>The .action foramt is:</p>
+
+<pre><code>#goal definition
+string problem
+string domain
+---
+#result definition
+string result
+---
+#feedback
+string feedback
+</code></pre>
+
+<h2>
+<a name="parmeters" class="anchor" href="#parmeters"><span class="octicon octicon-link"></span></a>Parmeters</h2>
+
+<p>TBC</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/phuicy">phuicy</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
